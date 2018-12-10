@@ -1,41 +1,62 @@
 mod simplenet;
+mod vpcap;
+mod systems;
 
 use crate::simplenet::*;
 use custom_error::custom_error;
-use pcap::Capture;
-use pnet::packet::ethernet::EthernetPacket;
-use std::net::IpAddr;
+use std::time::Duration;
+
+use amethyst::{
+    core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
+    ecs::prelude::{Component, DenseVecStorage},
+    input::InputBundle,
+    prelude::*,
+    renderer::{DisplayConfig, DrawFlat2D, Pipeline, RenderBundle, Stage},
+    ui::{DrawUi, UiBundle},
+    utils::application_root_dir,
+};
 
 custom_error! {MyError
     Pcap{source: pcap::Error} = "Pcap error",
+    Amethyst{source: amethyst::Error} = "Amethyst error",
+    AmethystConfig{source: amethyst::config::ConfigError} = "Amethyst error",
 }
 
 fn main() -> Result<(), MyError> {
-    let mut cap = Capture::from_file("/home/eric/Downloads/test.pcap")?;
-    let mut packets = Vec::new();
-    while let Ok(p) = cap.next() {
-        if let Some(ether_packet) = EthernetPacket::new(&p) {
-            let pack = handle_ethernet_frame(&ether_packet, &p.header.ts);
-            packets.push(pack);
-        }
-    }
-    let p: Vec<&SimplePacket> = packets
-        .iter()
-        .filter_map(|p| match p {
-            Some(x) => Some(x),
-            _ => None,
-        })
-        .collect();
-    println!("{:#?}", p);
-    let mut p: Vec<&IpAddr> = packets
-        .iter()
-        .filter_map(|p| match p {
-            Some(SimplePacket::Ip(x)) => Some(&x.sender_proto_addr),
-            _ => None,
-        })
-        .collect();
-    p.sort();
-    p.dedup();
-    println!("{:#?}", p);
+    use crate::vpcap::Vpcap;
+
+    amethyst::start_logger(Default::default());
+    let app_root = application_root_dir();
+    //let display_config_path = format!("{}/resources/display.ron", app_root);
+    let display_config_path = format!("{}/resources/display.ron", ".");
+    let config = DisplayConfig::load(&display_config_path);
+    let pipe = Pipeline::build().with_stage(
+        Stage::with_backbuffer()
+            .clear_target([1.0, 1.0, 1.0, 1.0], 1.0)
+            .with_pass(DrawFlat2D::new())
+            .with_pass(DrawUi::new()),
+    );
+    //let key_bindings_path = format!("{}/resources/input.ron", app_root);
+    let key_bindings_path = format!("{}/resources/input.ron", ".");
+    let assets_dir = "./assets";
+
+    let game_data = GameDataBuilder::default()
+        //.with_bundle(
+        //    InputBundle::<String, String>::new().with_bindings_from_file(&key_bindings_path)?,
+        //)?
+        .with_bundle(RenderBundle::new(pipe, Some(config)).with_sprite_sheet_processor())?;
+        //.with_bundle(TransformBundle::new().with_dep(&["ball_system", "paddle_system"]))?
+        //.with_bundle(UiBundle::<String, String>::new())?;
+    let mut game = Application::build(assets_dir, Vpcap)?
+        //.with_frame_limit(
+        //    FrameRateLimitStrategy::SleepAndYield(Duration::from_millis(2)),
+        //    144,
+        //)
+        .build(game_data)?;
+    game.run();
     Ok(())
+}
+
+impl Component for SimplePacket {
+    type Storage = DenseVecStorage<Self>;
 }
