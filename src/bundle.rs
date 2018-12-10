@@ -1,4 +1,4 @@
-use crate::systems::{PacketSystem};
+use crate::systems::PacketSystem;
 use amethyst::{
     core::bundle::{Result, SystemBundle},
     ecs::prelude::DispatcherBuilder,

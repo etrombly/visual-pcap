@@ -1,5 +1,3 @@
 mod packet;
 
-pub use self::{
-    packet::PacketSystem,
-};
+pub use self::packet::PacketSystem;

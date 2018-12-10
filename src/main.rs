@@ -1,10 +1,10 @@
-mod simplenet;
-mod vpcap;
-mod systems;
 mod bundle;
+mod simplenet;
+mod systems;
+mod vpcap;
 
-use crate::simplenet::*;
 use crate::bundle::PacketBundle;
+use crate::simplenet::*;
 
 use std::time::Duration;
 
@@ -17,7 +17,6 @@ use amethyst::{
     ui::{DrawUi, UiBundle},
     utils::application_root_dir,
 };
-
 
 fn main() -> amethyst::Result<()> {
     use crate::vpcap::Vpcap;

@@ -1,5 +1,5 @@
-use crate::vpcap::Vpcap;
 use crate::simplenet::SimplePacket;
+use crate::vpcap::Vpcap;
 
 use amethyst::{
     core::timing::Time,
@@ -18,7 +18,7 @@ impl<'s> System<'s> for PacketSystem {
     );
 
     fn run(&mut self, (packets, time): Self::SystemData) {
-        for packet in (&packets).join(){
+        for packet in (&packets).join() {
             println!("{:?}", packet);
             /*
             let p: Vec<&SimplePacket> = packets
