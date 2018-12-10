@@ -1,18 +1,10 @@
 use crate::simplenet::*;
 use pcap::Capture;
 use pnet::packet::ethernet::EthernetPacket;
-use std::net::IpAddr;
 
 use amethyst::{
-    assets::{AssetStorage, Loader},
-    core::transform::Transform,
     ecs::prelude::World,
     prelude::*,
-    renderer::{
-        Camera, Flipped, PngFormat, Projection, SpriteRender, SpriteSheet, SpriteSheetFormat,
-        SpriteSheetHandle, Texture, TextureMetadata,
-    },
-    ui::{Anchor, TtfFormat, UiText, UiTransform},
 };
 
 pub struct Vpcap;
@@ -38,24 +30,4 @@ fn load_pcap(world: &mut World) {
             }
         }
     }
-    /*
-    let p: Vec<&SimplePacket> = packets
-        .iter()
-        .filter_map(|p| match p {
-            Some(x) => Some(x),
-            _ => None,
-        })
-        .collect();
-    println!("{:#?}", p);
-    let mut p: Vec<&IpAddr> = packets
-        .iter()
-        .filter_map(|p| match p {
-            Some(SimplePacket::Ip(x)) => Some(&x.sender_proto_addr),
-            _ => None,
-        })
-        .collect();
-    p.sort();
-    p.dedup();
-    println!("{:#?}", p);
-    */
 }
