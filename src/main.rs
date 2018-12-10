@@ -6,7 +6,6 @@ mod bundle;
 use crate::simplenet::*;
 use crate::bundle::PacketBundle;
 
-use custom_error::custom_error;
 use std::time::Duration;
 
 use amethyst::{
@@ -19,13 +18,8 @@ use amethyst::{
     utils::application_root_dir,
 };
 
-custom_error! {MyError
-    Pcap{source: pcap::Error} = "Pcap error",
-    Amethyst{source: amethyst::Error} = "Amethyst error",
-    AmethystConfig{source: amethyst::config::ConfigError} = "Amethyst error",
-}
 
-fn main() -> Result<(), MyError> {
+fn main() -> amethyst::Result<()> {
     use crate::vpcap::Vpcap;
 
     amethyst::start_logger(Default::default());
