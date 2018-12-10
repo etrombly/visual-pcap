@@ -1,8 +1,11 @@
 mod simplenet;
 mod vpcap;
 mod systems;
+mod bundle;
 
 use crate::simplenet::*;
+use crate::bundle::PacketBundle;
+
 use custom_error::custom_error;
 use std::time::Duration;
 
@@ -41,11 +44,12 @@ fn main() -> Result<(), MyError> {
     let assets_dir = "./assets";
 
     let game_data = GameDataBuilder::default()
-        //.with_bundle(
-        //    InputBundle::<String, String>::new().with_bindings_from_file(&key_bindings_path)?,
-        //)?
-        .with_bundle(RenderBundle::new(pipe, Some(config)).with_sprite_sheet_processor())?;
-        //.with_bundle(TransformBundle::new().with_dep(&["ball_system", "paddle_system"]))?
+        .with_bundle(PacketBundle)?
+        .with_bundle(
+            InputBundle::<String, String>::new().with_bindings_from_file(&key_bindings_path)?,
+        )?
+        .with_bundle(RenderBundle::new(pipe, Some(config)).with_sprite_sheet_processor())?
+        .with_bundle(TransformBundle::new().with_dep(&["packet_system"]))?;
         //.with_bundle(UiBundle::<String, String>::new())?;
     let mut game = Application::build(assets_dir, Vpcap)?
         //.with_frame_limit(

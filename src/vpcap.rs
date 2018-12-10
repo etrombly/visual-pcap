@@ -21,6 +21,7 @@ impl SimpleState for Vpcap{
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
 
+        world.register::<SimplePacket>();
         load_pcap(world);
     }
 }
