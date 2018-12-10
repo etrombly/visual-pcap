@@ -7,6 +7,7 @@ use crate::bundle::PacketBundle;
 use crate::simplenet::*;
 
 use std::time::Duration;
+use std::net::IpAddr;
 
 use amethyst::{
     core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
@@ -55,5 +56,11 @@ fn main() -> amethyst::Result<()> {
 }
 
 impl Component for SimplePacket {
+    type Storage = DenseVecStorage<Self>;
+}
+
+pub struct IpAddrS(pub IpAddr);
+
+impl Component for IpAddrS {
     type Storage = DenseVecStorage<Self>;
 }

@@ -21,6 +21,15 @@ pub enum SimplePacket {
     Arp(SimpleArp),
 }
 
+impl SimplePacket {
+    pub fn get_source_ip_addr(&self) -> IpAddr {
+        match self{
+            SimplePacket::Ip(x) => x.sender_proto_addr,
+            SimplePacket::Arp(x) => x.sender_proto_addr,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum SimpleProto {
     Udp(SimpleUdp),

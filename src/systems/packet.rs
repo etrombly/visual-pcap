@@ -19,27 +19,7 @@ impl<'s> System<'s> for PacketSystem {
 
     fn run(&mut self, (packets, time): Self::SystemData) {
         for packet in (&packets).join() {
-            println!("{:?}", packet);
-            /*
-            let p: Vec<&SimplePacket> = packets
-                .iter()
-                .filter_map(|p| match p {
-                    Some(x) => Some(x),
-                    _ => None,
-                })
-                .collect();
-            println!("{:#?}", p);
-            let mut p: Vec<&IpAddr> = packets
-                .iter()
-                .filter_map(|p| match p {
-                    Some(SimplePacket::Ip(x)) => Some(&x.sender_proto_addr),
-                    _ => None,
-                })
-                .collect();
-            p.sort();
-            p.dedup();
-            println!("{:#?}", p);
-            */
+            //println!("{:?}", packet);
         }
     }
 }
