@@ -1,4 +1,4 @@
-use crate::systems::PacketSystem;
+use crate::systems::{PacketSystem, HostSystem};
 use amethyst::{
     core::bundle::{Result, SystemBundle},
     ecs::prelude::DispatcherBuilder,
@@ -11,6 +11,7 @@ pub struct PacketBundle;
 impl<'a, 'b> SystemBundle<'a, 'b> for PacketBundle {
     fn build(self, builder: &mut DispatcherBuilder<'a, 'b>) -> Result<()> {
         builder.add(PacketSystem, "packet_system", &[]);
+        builder.add(HostSystem, "host_system", &[]);
         Ok(())
     }
 }
