@@ -1,6 +1,6 @@
 
 (
-  dimensions: Some((500, 500)),
+  dimensions: Some((900, 900)),
   max_dimensions: None,
   min_dimensions: None,
   fullscreen: false,

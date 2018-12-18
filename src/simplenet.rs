@@ -23,9 +23,15 @@ pub enum SimplePacket {
 
 impl SimplePacket {
     pub fn get_source_ip_addr(&self) -> IpAddr {
-        match self{
+        match self {
             SimplePacket::Ip(x) => x.sender_proto_addr,
             SimplePacket::Arp(x) => x.sender_proto_addr,
+        }
+    }
+    pub fn get_dest_ip_addr(&self) -> IpAddr {
+        match self {
+            SimplePacket::Ip(x) => x.target_proto_addr,
+            SimplePacket::Arp(x) => x.target_proto_addr,
         }
     }
 }
