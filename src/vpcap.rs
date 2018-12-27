@@ -1,7 +1,9 @@
 use crate::simplenet::*;
 use crate::IpAddrS;
+use crate::StartTime;
 use pcap::Capture;
 use pnet::packet::ethernet::EthernetPacket;
+use chrono::naive::NaiveDateTime;
 
 use amethyst::{
     assets::Loader,
@@ -9,7 +11,9 @@ use amethyst::{
         nalgebra::{Point2, Rotation2},
         transform::Transform,
     },
-    ecs::prelude::World,
+    ecs::{
+        prelude::World,
+    },
     prelude::*,
     renderer::*,
     renderer::{Camera, Projection},
@@ -59,15 +63,27 @@ fn load_pcap(world: &mut World) {
 
     let mut cap = Capture::from_file("/home/eric/Downloads/test.pcap").expect("error opening pcap");
     let mut hosts = Vec::new();
+    let mut start: Option<NaiveDateTime> = None;
 
     while let Ok(p) = cap.next() {
         if let Some(ether_packet) = EthernetPacket::new(&p) {
             if let Some(pack) = handle_ethernet_frame(&ether_packet, &p.header.ts) {
+                if let Some(time) = start {
+                    if pack.get_ts() < time {
+                        start = Some(pack.get_ts());
+                    }
+                }else{
+                    start = Some(pack.get_ts());
+                }
                 hosts.push(pack.get_source_ip_addr());
                 world.create_entity().with(pack).build();
             }
         }
     }
+    println!("{:?}", start);
+    let start = StartTime { start: start.unwrap()};
+    world.add_resource(start);
+
     hosts.sort();
     hosts.dedup();
 

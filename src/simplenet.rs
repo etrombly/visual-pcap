@@ -34,6 +34,13 @@ impl SimplePacket {
             SimplePacket::Arp(x) => x.target_proto_addr,
         }
     }
+
+    pub fn get_ts(&self) -> NaiveDateTime {
+        match self {
+            SimplePacket::Ip(x) => x.ts,
+            SimplePacket::Arp(x) => x.ts,
+        }
+    }
 }
 
 #[derive(Debug)]

@@ -8,6 +8,7 @@ use crate::simplenet::*;
 
 use std::net::IpAddr;
 use std::time::Duration;
+use chrono::naive::NaiveDateTime;
 
 use amethyst::{
     core::{frame_limiter::FrameRateLimitStrategy, transform::TransformBundle},
@@ -55,6 +56,16 @@ fn main() -> amethyst::Result<()> {
         .build(game_data)?;
     game.run();
     Ok(())
+}
+
+pub struct StartTime {
+    pub start: NaiveDateTime,
+}
+
+impl Default for StartTime {
+    fn default () -> StartTime {
+        StartTime {start: NaiveDateTime::from_timestamp(0, 0)}
+    }
 }
 
 impl Component for SimplePacket {
