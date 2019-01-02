@@ -28,10 +28,25 @@ impl SimplePacket {
             SimplePacket::Arp(x) => x.sender_proto_addr,
         }
     }
+
     pub fn get_dest_ip_addr(&self) -> IpAddr {
         match self {
             SimplePacket::Ip(x) => x.target_proto_addr,
             SimplePacket::Arp(x) => x.target_proto_addr,
+        }
+    }
+
+    pub fn get_source_port(&self) -> Option<u16> {
+        match self {
+            SimplePacket::Ip(x) => x.get_source_port(),
+            SimplePacket::Arp(_) => None,
+        }
+    }
+
+    pub fn get_dest_port(&self) -> Option<u16> {
+        match self {
+            SimplePacket::Ip(x) => x.get_dest_port(),
+            SimplePacket::Arp(_) => None,
         }
     }
 
@@ -107,6 +122,24 @@ impl SimpleIp {
             target_proto_addr,
             proto,
             ts,
+        }
+    }
+}
+
+impl SimpleIp {
+    pub fn get_source_port(&self) -> Option<u16> {
+        match &self.proto {
+            Some(SimpleProto::Udp(x)) => Some(x.source),
+            Some(SimpleProto::Tcp(x)) => Some(x.source),
+            _ => None,
+        }
+    }
+
+    pub fn get_dest_port(&self) -> Option<u16> {
+        match &self.proto {
+            Some(SimpleProto::Udp(x)) => Some(x.destination),
+            Some(SimpleProto::Tcp(x)) => Some(x.destination),
+            _ => None,
         }
     }
 }

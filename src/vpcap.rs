@@ -1,9 +1,11 @@
 use crate::simplenet::*;
+use crate::util::*;
 use crate::IpAddrS;
 use crate::StartTime;
+
+use chrono::naive::NaiveDateTime;
 use pcap::Capture;
 use pnet::packet::ethernet::EthernetPacket;
-use chrono::naive::NaiveDateTime;
 
 use amethyst::{
     assets::Loader,
@@ -11,9 +13,7 @@ use amethyst::{
         nalgebra::{Point2, Rotation2},
         transform::Transform,
     },
-    ecs::{
-        prelude::World,
-    },
+    ecs::prelude::World,
     prelude::*,
     renderer::*,
     renderer::{Camera, Projection},
@@ -26,13 +26,9 @@ impl SimpleState for Vpcap {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let StateData { world, .. } = data;
 
-        world.add_resource(DebugLines::new().with_capacity(100));
-        world.add_resource(DebugLinesParams {
-            line_width: 1.0 / 400.0,
-        });
-
         world.register::<SimplePacket>();
         world.register::<IpAddrS>();
+        world.register::<Material>();
         initialise_camera(world);
         load_pcap(world);
     }
@@ -44,9 +40,8 @@ fn initialise_camera(world: &mut World) {
     transform.set_z(2.0);
     world
         .create_entity()
-        .with(Camera::from(Projection::perspective(
-                1.33333,
-                std::f32::consts::FRAC_PI_2,
+        .with(Camera::from(Projection::orthographic(
+            0.0, 600.0, 0.0, 600.0,
         )))
         .with(transform)
         .build();
@@ -72,46 +67,67 @@ fn load_pcap(world: &mut World) {
                     if pack.get_ts() < time {
                         start = Some(pack.get_ts());
                     }
-                }else{
+                } else {
                     start = Some(pack.get_ts());
                 }
                 hosts.push(pack.get_source_ip_addr());
-                world.create_entity().with(pack).build();
+                // Create the mesh, material and translation.
+                let color = match &pack {
+                    SimplePacket::Ip(x) => match x.get_dest_port() {
+                        Some(53) => [1., 0., 0., 1.],
+                        Some(80) | Some(8080) | Some(443) => [0., 1., 0., 1.],
+                        _ => [1., 1., 1., 1.],
+                    },
+                    SimplePacket::Arp(_) => [0., 0., 1., 1.],
+                };
+                let mesh = create_mesh(world, generate_circle_vertices(3.0, 16));
+                let material = create_color_material(world, color);
+                let mut local_transform = Transform::default();
+                local_transform.set_position([300.0, 300.0, 1.0].into());
+                world
+                    .create_entity()
+                    .with(mesh)
+                    .with(material)
+                    .with(pack)
+                    .with(local_transform)
+                    .build();
             }
         }
     }
-    println!("{:?}", start);
-    let start = StartTime { start: start.unwrap()};
+
+    let start = StartTime {
+        start: start.unwrap(),
+    };
     world.add_resource(start);
 
     hosts.sort();
     hosts.dedup();
 
     let angle = Rotation2::new((360.0 / hosts.len() as f32).to_radians());
-    let mut last_point = Point2::new(0., 600.);
+    let mut point = Point2::new(0., 590.0);
     for host in &hosts {
         world.create_entity().with(IpAddrS(*host)).build();
+        
+        point = angle * point;
 
-        last_point = angle * last_point;
-
-        let host_transform = UiTransform::new(
+        let ui_transform = UiTransform::new(
             host.to_string(),
             Anchor::Middle,
-            last_point.coords.x + 900.,
-            last_point.coords.y - 600.,
+            point.x + 1200.0,
+            point.y - 600.0,
             1.,
-            200.,
+            100.,
             50.,
             0,
         );
 
         let _host_text = world
             .create_entity()
-            .with(host_transform)
+            .with(ui_transform)
             .with(UiText::new(
                 font.clone(),
                 host.to_string(),
-                [0., 0., 0., 1.],
+                [1., 0., 0., 1.],
                 20.,
             ))
             .build();

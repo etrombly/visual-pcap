@@ -2,8 +2,8 @@ use crate::simplenet::SimplePacket;
 use crate::StartTime;
 
 use amethyst::{
-    core::timing::Time,
-    ecs::prelude::{Join, Read, ReadStorage, System, Write},
+    core::{timing::Time, transform::Transform},
+    ecs::prelude::{Join, Read, ReadStorage, System, Write, WriteStorage},
     renderer::*,
     ui::UiTransform,
 };
@@ -14,14 +14,14 @@ impl<'s> System<'s> for PacketSystem {
     type SystemData = (
         ReadStorage<'s, SimplePacket>,
         Read<'s, Time>,
+        WriteStorage<'s, Transform>,
         ReadStorage<'s, UiTransform>,
-        Write<'s, DebugLines>,
         Read<'s, StartTime>,
         //Read<'s, InputHandler<String, String>>,
     );
 
-    fn run(&mut self, (packets, time, hosts, mut debug_lines, start): Self::SystemData) {
-        for packet in (&packets).join() {
+    fn run(&mut self, (packets, time, mut trans, hosts, start): Self::SystemData) {
+        for (packet, trans) in (&packets, &mut trans).join() {
             let source = packet.get_source_ip_addr().to_string();
             let dest = packet.get_dest_ip_addr().to_string();
             let time_delta = (packet.get_ts() - start.start).to_std().unwrap();
@@ -46,12 +46,12 @@ impl<'s> System<'s> for PacketSystem {
                     }
                 })
                 .collect();
-            if end.len() > 0 && time_delta < now && now - time_delta < std::time::Duration::new(2, 0){
-                debug_lines.draw_line(
-                    [start[0].0 / 1600. -1., start[0].1 / 900. + 0.3, 1.].into(),
-                    [end[0].0 / 1600. -1., end[0].1 / 900. + 0.3, 1.].into(),
-                    [0., 0., 0., 1.].into(),
-                );
+            if end.len() > 0
+                && time_delta < now
+                && now - time_delta < std::time::Duration::new(2, 0)
+            {
+                println!("{} {}", (start[0].0 -1200.0)/ 3.0, (start[0].1 + 800.0) / 2.0);
+                trans.set_position([(start[0].0 - 100.0)/ 5.0, (start[0].1 + 1150.0) / 3.0, 1.].into());
             }
         }
     }
