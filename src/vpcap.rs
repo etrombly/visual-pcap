@@ -80,7 +80,7 @@ fn load_pcap(world: &mut World) {
                     },
                     SimplePacket::Arp(_) => [0., 0., 1., 1.],
                 };
-                let mesh = create_mesh(world, generate_circle_vertices(3.0, 16));
+                let mesh = create_mesh(world, generate_circle_vertices(2.0, 16));
                 let material = create_color_material(world, color);
                 let mut local_transform = Transform::default();
                 local_transform.set_position([300.0, 300.0, 1.0].into());
