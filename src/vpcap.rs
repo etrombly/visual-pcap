@@ -107,13 +107,13 @@ fn load_pcap(world: &mut World) {
     let mut point = Point2::new(0., 590.0);
     for host in &hosts {
         world.create_entity().with(IpAddrS(*host)).build();
-        
+
         point = angle * point;
 
         let ui_transform = UiTransform::new(
             host.to_string(),
             Anchor::Middle,
-            point.x + 1200.0,
+            point.x + 1000.0,
             point.y - 600.0,
             1.,
             100.,

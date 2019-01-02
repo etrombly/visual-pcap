@@ -48,10 +48,20 @@ impl<'s> System<'s> for PacketSystem {
                 .collect();
             if end.len() > 0
                 && time_delta < now
-                && now - time_delta < std::time::Duration::new(2, 0)
+                && now - time_delta < std::time::Duration::new(10, 0)
             {
-                println!("{} {}", (start[0].0 -1200.0)/ 3.0, (start[0].1 + 800.0) / 2.0);
-                trans.set_position([(start[0].0 - 100.0)/ 5.0, (start[0].1 + 1150.0) / 3.0, 1.].into());
+                let delta_x =
+                    ((start[0].0 - end[0].0) / 10.0) * (now - time_delta).as_float_secs() as f32;
+                let delta_y =
+                    ((start[0].1 - end[0].1) / 10.0) * (now - time_delta).as_float_secs() as f32;
+                trans.set_position(
+                    [
+                        (start[0].0 - 100.0 - delta_x) / 5.0,
+                        (start[0].1 + 1170.0 - delta_y) / 3.0,
+                        1.,
+                    ]
+                    .into(),
+                );
             }
         }
     }

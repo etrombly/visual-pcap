@@ -1,3 +1,4 @@
+#![feature(duration_float)]
 mod bundle;
 mod simplenet;
 mod systems;
@@ -17,8 +18,7 @@ use amethyst::{
     input::InputBundle,
     prelude::*,
     renderer::{
-        DisplayConfig, DrawDebugLines, DrawFlat, DrawFlat2D, Pipeline, PosColorNorm, PosTex,
-        Stage,
+        DisplayConfig, DrawDebugLines, DrawFlat, DrawFlat2D, Pipeline, PosColorNorm, PosTex, Stage,
     },
     ui::{DrawUi, UiBundle},
     //utils::application_root_dir,
