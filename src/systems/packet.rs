@@ -3,8 +3,7 @@ use crate::StartTime;
 
 use amethyst::{
     core::{timing::Time, transform::Transform},
-    ecs::prelude::{Join, Read, ReadStorage, System, Write, WriteStorage},
-    renderer::*,
+    ecs::prelude::{Join, Read, ReadStorage, System, WriteStorage},
     ui::UiTransform,
 };
 
@@ -56,8 +55,8 @@ impl<'s> System<'s> for PacketSystem {
                     ((start[0].1 - end[0].1) / 5.0) * (now - time_delta).as_float_secs() as f32;
                 trans.set_position(
                     [
-                        (start[0].0 - 100.0 - delta_x) / 5.0,
-                        (start[0].1 + 1170.0 - delta_y) / 3.0,
+                        (start[0].0 - delta_x) / 4.0,
+                        (start[0].1 - delta_y) / 3.0,
                         1.,
                     ]
                     .into(),

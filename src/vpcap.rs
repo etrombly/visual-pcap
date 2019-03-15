@@ -41,7 +41,7 @@ fn initialise_camera(world: &mut World) {
     world
         .create_entity()
         .with(Camera::from(Projection::orthographic(
-            0.0, 600.0, 0.0, 600.0,
+            0.0, 800.0, 0.0, 600.0,
         )))
         .with(transform)
         .build();
@@ -113,8 +113,8 @@ fn load_pcap(world: &mut World) {
         let ui_transform = UiTransform::new(
             host.to_string(),
             Anchor::Middle,
-            point.x + 1000.0,
-            point.y - 600.0,
+            point.x, // + 1000.0
+            point.y, // - 600.0
             1.,
             100.,
             50.,
