@@ -610,6 +610,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "fixedbitset"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "86d4de0081402f5e88cdac65c8dcdcc73118c1a7a465e2a05f0da05843a8ea33"
+
+[[package]]
 name = "fnv"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -635,6 +641,15 @@ name = "fuchsia-cprng"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a06f77d526c1a601b7c4cdd98f54b5eaabffc14d5f2f0296febdc7f357c6d3ba"
+
+[[package]]
+name = "generational-arena"
+version = "0.2.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e40d0cee2e2fb4fba18b55a27bf96faf49fa86d49f178695bd3bf4500b156b4"
+dependencies = [
+ "cfg-if",
+]
 
 [[package]]
 name = "generic-array"
@@ -1291,6 +1306,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "ncollide2d"
+version = "0.20.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9865e6a0927837163e70eb308e91155d4dab69ba669ef3d5414cc19e3855fd40"
+dependencies = [
+ "alga",
+ "approx",
+ "bitflags 1.2.1",
+ "downcast-rs",
+ "either",
+ "nalgebra",
+ "num-traits 0.2.11",
+ "petgraph",
+ "slab",
+ "slotmap",
+ "smallvec",
+]
+
+[[package]]
 name = "nix"
 version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1330,6 +1364,28 @@ checksum = "2ad2a91a8e869eeb30b9cb3119ae87773a8f4ae617f41b1eb9c154b2905f7bd6"
 dependencies = [
  "memchr",
  "version_check",
+]
+
+[[package]]
+name = "nphysics2d"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9688f55384d0d7708211dc0a21d6d5caedd4a6f558bdd785a71f904a6d714f6e"
+dependencies = [
+ "alga",
+ "approx",
+ "bitflags 1.2.1",
+ "downcast-rs",
+ "either",
+ "generational-arena",
+ "lazy_static",
+ "nalgebra",
+ "ncollide2d",
+ "num-traits 0.2.11",
+ "slotmap",
+ "smallvec",
+ "stdweb 0.4.20",
+ "time",
 ]
 
 [[package]]
@@ -1441,6 +1497,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ordermap"
+version = "0.3.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a86ed3f5f244b372d6b1a00b72ef7f8876d0bc6a78a4c9985c53614041512063"
+
+[[package]]
 name = "osmesa-sys"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1517,6 +1579,16 @@ name = "percent-encoding"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
+
+[[package]]
+name = "petgraph"
+version = "0.4.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c3659d1ee90221741f65dd128d9998311b0e40c5d3c23a62445938214abce4f"
+dependencies = [
+ "fixedbitset",
+ "ordermap",
+]
 
 [[package]]
 name = "pkg-config"
@@ -2166,6 +2238,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "slab"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c111b5bd5695e56cffe5129854aa230b39c93a305372fdbb2668ca2394eea9f8"
+
+[[package]]
 name = "slice-deque"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2175,6 +2253,12 @@ dependencies = [
  "mach",
  "winapi 0.3.8",
 ]
+
+[[package]]
+name = "slotmap"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "759fd553261805f128e2900bf69ab3d034260bc338caf7f0ee54dbf035c85acd"
 
 [[package]]
 name = "smallvec"
@@ -2503,11 +2587,15 @@ name = "visual-pcap"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "generational-arena",
  "ggez",
  "legion",
  "libc",
+ "ncollide2d",
+ "nphysics2d",
  "pcap",
  "pnet",
+ "rayon",
 ]
 
 [[package]]
